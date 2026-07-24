@@ -30,6 +30,7 @@ export interface AppSettings {
   id: "current";
   locale: "es" | "en";
   onboardingDone: boolean;
+  installBannerDismissed?: boolean;
 }
 
 /**

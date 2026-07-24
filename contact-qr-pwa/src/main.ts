@@ -1,5 +1,10 @@
 import "./styles.css";
+// Debe importarse ANTES de cualquier otra cosa: registra el listener de
+// "beforeinstallprompt" apenas carga el script, para no perder el evento
+// si el navegador lo dispara muy temprano.
+import "@shared/utils/installPrompt";
 import { startApp } from "./app";
+import { renderInstallBanner } from "@features/install-banner/InstallBanner";
 
 const root = document.getElementById("app");
 
@@ -8,3 +13,4 @@ if (!root) {
 }
 
 startApp(root);
+renderInstallBanner();
