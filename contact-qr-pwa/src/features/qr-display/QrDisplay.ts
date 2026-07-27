@@ -30,9 +30,9 @@ export function renderQrDisplay(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  // Fondo oscuro, tarjeta blanca centrada
+  // Fondo claro, tarjeta clara centrada
   wrapper.className =
-    "min-h-screen w-full bg-surface text-text-primary flex flex-col items-center justify-center p-6";
+    "min-h-screen w-full bg-background text-text-primary flex flex-col items-center justify-center p-6";
 
   const backButton = document.createElement("button");
   backButton.textContent = "← Volver";

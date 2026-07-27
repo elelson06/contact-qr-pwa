@@ -1,6 +1,7 @@
 import { getAllCards } from "@core/storage/cardStore";
 import { shareApp } from "@shared/utils/shareApp";
 import { createButton } from "@shared/ui/button";
+import { createFooter } from "@shared/ui/footer";
 import type { CardType } from "@core/types/card.types";
 
 interface CardSelectorCallbacks {
@@ -33,7 +34,7 @@ export async function renderCardSelector(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-12 bg-surface min-h-screen";
+  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-12 bg-background min-h-screen";
 
   const header = document.createElement("div");
   header.className = "flex flex-col items-center gap-2 mb-6";
@@ -104,5 +105,6 @@ export async function renderCardSelector(
   };
 
   wrapper.append(shareButton, shareFeedback);
+  wrapper.append(createFooter());
   container.append(wrapper);
 }
