@@ -2,10 +2,10 @@ export type ButtonVariant = "primary" | "secondary" | "ghost";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-accent text-brand-bg font-semibold hover:opacity-90 active:scale-[0.98]",
+    "bg-primary text-primary-on font-medium shadow-md hover:shadow-lg active:scale-[0.98] transition-all",
   secondary:
-    "bg-white/10 text-white font-medium hover:bg-white/20 active:scale-[0.98]",
-  ghost: "text-white/70 hover:text-white underline underline-offset-4",
+    "bg-transparent border border-outline text-text-primary hover:bg-surface-variant active:scale-[0.98] transition-all",
+  ghost: "text-text-secondary hover:text-text-primary underline underline-offset-4",
 };
 
 interface ButtonOptions {
@@ -20,7 +20,7 @@ export function createButton({ label, variant = "primary", type = "button", onCl
   const btn = document.createElement("button");
   btn.type = type;
   btn.textContent = label;
-  btn.className = `w-full rounded-xl py-3 px-4 transition-transform ${VARIANT_CLASSES[variant]}`;
+  btn.className = `w-full rounded-full py-3 px-6 text-center transition-transform ${VARIANT_CLASSES[variant]}`;
   if (onClick) btn.addEventListener("click", onClick);
   return btn;
 }
