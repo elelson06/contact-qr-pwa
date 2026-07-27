@@ -1,5 +1,5 @@
-import type { ContactInput, Result } from "@core/types/contact.types";
-import { validateContact } from "@core/vcard/validateContact";
+import type { PersonalCardInput, ProfessionalCardInput, Result } from "@core/types/card.types";
+import { validatePersonalCard, validateProfessionalCard } from "@core/vcard/validateContact";
 
 /**
  * El spec de vCard (RFC 2426 / vCard 3.0) requiere escapar coma, punto y coma,
@@ -13,36 +13,47 @@ function escapeVCardValue(value: string): string {
     .replace(/\n/g, "\\n");
 }
 
-/**
- * Construye el string vCard 3.0 a partir de los datos del contacto.
- * Elegimos 3.0 (no 4.0) porque tiene la compatibilidad más amplia y
- * probada con los lectores nativos de cámara de iOS y Android.
- *
- * Devuelve Result: valida antes de construir, así nunca se genera
- * un vCard con datos vacíos o mal formados.
- */
-export function buildVCard(input: ContactInput): Result<string> {
-  const validation = validateContact(input);
-  if (!validation.ok) return validation;
-
-  const { name, phone, email, organization, title } = validation.data;
-
+function buildLines(data: {
+  name: string;
+  phone: string;
+  email?: string;
+  organization?: string;
+  title?: string;
+  website?: string;
+}): string {
   const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
-    `FN:${escapeVCardValue(name)}`,
-    // N: Apellidos;Nombre;;; — usamos el nombre completo en el campo "Nombre"
-    // porque el MVP no distingue nombre/apellido en el formulario.
-    `N:;${escapeVCardValue(name)};;;`,
-    `TEL;TYPE=CELL:${escapeVCardValue(phone)}`,
+    `FN:${escapeVCardValue(data.name)}`,
+    `N:;${escapeVCardValue(data.name)};;;`,
+    `TEL;TYPE=CELL:${escapeVCardValue(data.phone)}`,
   ];
 
-  if (email) lines.push(`EMAIL:${escapeVCardValue(email)}`);
-  if (organization) lines.push(`ORG:${escapeVCardValue(organization)}`);
-  if (title) lines.push(`TITLE:${escapeVCardValue(title)}`);
+  if (data.email) lines.push(`EMAIL:${escapeVCardValue(data.email)}`);
+  if (data.organization) lines.push(`ORG:${escapeVCardValue(data.organization)}`);
+  if (data.title) lines.push(`TITLE:${escapeVCardValue(data.title)}`);
+  if (data.website) lines.push(`URL:${escapeVCardValue(data.website)}`);
 
   lines.push("END:VCARD");
 
   // vCard requiere terminadores de línea CRLF
-  return { ok: true, data: lines.join("\r\n") };
+  return lines.join("\r\n");
+}
+
+/**
+ * Construye el string vCard 3.0 para la tarjeta Personal (solo nombre y teléfono).
+ * Elegimos 3.0 (no 4.0) por su compatibilidad más amplia y probada con los
+ * lectores nativos de cámara de iOS y Android.
+ */
+export function buildVCard(input: PersonalCardInput): Result<string> {
+  const validation = validatePersonalCard(input);
+  if (!validation.ok) return validation;
+  return { ok: true, data: buildLines(validation.data) };
+}
+
+/** Construye el vCard 3.0 para la tarjeta Profesional, incluyendo los campos opcionales presentes. */
+export function buildProfessionalVCard(input: ProfessionalCardInput): Result<string> {
+  const validation = validateProfessionalCard(input);
+  if (!validation.ok) return validation;
+  return { ok: true, data: buildLines(validation.data) };
 }

@@ -1,30 +1,33 @@
 import { createField } from "@shared/ui/input";
 import { createButton } from "@shared/ui/button";
-import { saveContact } from "@core/storage/contactStore";
+import { saveCard } from "@core/storage/cardStore";
 import { exportContactAsVcf } from "@shared/utils/exportVcf";
-import type { Contact } from "@core/types/contact.types";
+import type { PersonalCard } from "@core/types/card.types";
 
-interface ContactFormCallbacks {
-  onSaved: (contact: Contact) => void;
+interface PersonalFormCallbacks {
+  onSaved: (card: PersonalCard) => void;
+  onBack: () => void;
 }
 
 /**
- * Renderiza la pantalla de configuración dentro de `container`.
- * Si `existingContact` no es null, precarga los campos (modo edición
- * vía el botón ⚙️ desde la pantalla de QR).
+ * Renderiza la pantalla de configuración de la tarjeta Personal.
+ * Si `existingCard` no es null, precarga los campos (modo edición).
  */
-export function renderContactForm(
+export function renderPersonalForm(
   container: HTMLElement,
-  existingContact: Contact | null,
-  callbacks: ContactFormCallbacks
+  existingCard: PersonalCard | null,
+  callbacks: PersonalFormCallbacks
 ): void {
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
   wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16";
 
+  const backButton = createButton({ label: "← Volver", variant: "ghost", onClick: callbacks.onBack });
+  backButton.className = "w-auto self-start";
+
   const heading = document.createElement("h1");
-  heading.textContent = existingContact ? "Editar mi contacto" : "Configura tu contacto";
+  heading.textContent = existingCard ? "Editar tarjeta Personal" : "Configura tu tarjeta Personal";
   heading.className = "text-xl font-semibold";
 
   const subheading = document.createElement("p");
@@ -33,18 +36,18 @@ export function renderContactForm(
   subheading.className = "text-sm text-white/60";
 
   const nameField = createField({
-    id: "name",
+    id: "personal-name",
     label: "Nombre",
     placeholder: "Ej. Ana Pérez",
-    value: existingContact?.name ?? "",
+    value: existingCard?.name ?? "",
   });
 
   const phoneField = createField({
-    id: "phone",
+    id: "personal-phone",
     label: "Teléfono",
     placeholder: "Ej. +34 600 111 222",
     type: "tel",
-    value: existingContact?.phone ?? "",
+    value: existingCard?.phone ?? "",
   });
 
   const errorEl = document.createElement("p");
@@ -71,14 +74,14 @@ export function renderContactForm(
     clearError();
 
     const input = { name: nameField.input.value, phone: phoneField.input.value };
-    const result = await saveContact(input);
+    const result = await saveCard("personal", input);
 
     if (!result.ok) {
       showError(result.error);
       return;
     }
 
-    callbacks.onSaved(result.data);
+    callbacks.onSaved(result.data as PersonalCard);
   });
 
   const backupButton = createButton({
@@ -87,16 +90,16 @@ export function renderContactForm(
     onClick: () => {
       clearError();
       const input = { name: nameField.input.value, phone: phoneField.input.value };
-      const result = exportContactAsVcf(input);
+      const result = exportContactAsVcf(input, false);
       if (!result.ok) showError(result.error);
     },
   });
 
   const backupHint = document.createElement("p");
   backupHint.textContent =
-    "Recomendado: algunos navegadores pueden borrar los datos guardados si no abres la app por varios días. Este archivo te permite restaurar tu contacto.";
+    "Recomendado: algunos navegadores pueden borrar los datos guardados si no abres la app por varios días. Este archivo te permite restaurar tu tarjeta.";
   backupHint.className = "text-xs text-white/40";
 
-  wrapper.append(heading, subheading, form, backupButton, backupHint);
+  wrapper.append(backButton, heading, subheading, form, backupButton, backupHint);
   container.append(wrapper);
 }

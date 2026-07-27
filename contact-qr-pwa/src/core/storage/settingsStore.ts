@@ -1,5 +1,5 @@
 import { getDb } from "@core/storage/db";
-import type { AppSettings, Result } from "@core/types/contact.types";
+import type { AppSettings, Result } from "@core/types/card.types";
 
 const DEFAULT_SETTINGS: AppSettings = {
   id: "current",

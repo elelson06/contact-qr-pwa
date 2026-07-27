@@ -1,12 +1,22 @@
-import { renderContactForm } from "@features/contact-form/ContactForm";
+import { renderCardSelector } from "@features/card-selector/CardSelector";
+import { renderPersonalForm } from "@features/personal-card/PersonalForm";
+import { renderProfessionalForm } from "@features/professional-card/ProfessionalForm";
+import { renderInstagramForm } from "@features/instagram-card/InstagramForm";
 import { renderQrDisplay } from "@features/qr-display/QrDisplay";
-import { getContact, subscribe } from "@core/storage/contactStore";
-import type { Contact } from "@core/types/contact.types";
+import { getCard } from "@core/storage/cardStore";
+import { buildQrPayload } from "@core/qr-payload/buildQrPayload";
+import type {
+  Card,
+  CardType,
+  PersonalCard,
+  ProfessionalCard,
+  InstagramCard,
+} from "@core/types/card.types";
 
 /**
- * Router mínimo de dos pantallas. No usamos una librería de routing
- * porque no hay URLs distintas que navegar: la "ruta" depende
- * exclusivamente de si existe un contacto guardado o no.
+ * Router de la app. Siempre abre en la pantalla de selección (según se
+ * definió con el usuario): con 3 tipos de tarjeta ya no tiene sentido
+ * "abrir directo al QR" como en la v1 de una sola tarjeta.
  */
 export async function startApp(root: HTMLElement): Promise<void> {
   let cleanupCurrentScreen: (() => void) | null = null;
@@ -18,32 +28,60 @@ export async function startApp(root: HTMLElement): Promise<void> {
     }
   }
 
-  function showQr(contact: Contact): void {
+  async function showHome(): Promise<void> {
     teardown();
-    cleanupCurrentScreen = renderQrDisplay(root, contact, {
-      onEdit: () => showForm(contact),
+    await renderCardSelector(root, { onSelect: (type) => showCard(type) });
+  }
+
+  async function showCard(type: CardType): Promise<void> {
+    const result = await getCard(type);
+    const card = result.ok ? result.data : null;
+
+    if (card) {
+      showQr(card);
+    } else {
+      showForm(type, null);
+    }
+  }
+
+  function showQr(card: Card): void {
+    teardown();
+
+    const payload = buildQrPayload(card);
+    if (!payload.ok) {
+      // No debería ocurrir con datos ya guardados y validados, pero si
+      // pasa, es más seguro mandar de vuelta al formulario que mostrar
+      // una pantalla de QR rota.
+      showForm(card.type, card);
+      return;
+    }
+
+    cleanupCurrentScreen = renderQrDisplay(root, card, payload.data, {
+      onEdit: () => showForm(card.type, card),
+      onBack: () => void showHome(),
     });
   }
 
-  function showForm(existingContact: Contact | null): void {
+  function showForm(type: CardType, existingCard: Card | null): void {
     teardown();
-    renderContactForm(root, existingContact, {
-      onSaved: (contact) => showQr(contact),
-    });
+
+    if (type === "personal") {
+      renderPersonalForm(root, existingCard as PersonalCard | null, {
+        onSaved: (card) => showQr(card),
+        onBack: () => void showHome(),
+      });
+    } else if (type === "professional") {
+      renderProfessionalForm(root, existingCard as ProfessionalCard | null, {
+        onSaved: (card) => showQr(card),
+        onBack: () => void showHome(),
+      });
+    } else {
+      renderInstagramForm(root, existingCard as InstagramCard | null, {
+        onSaved: (card) => showQr(card),
+        onBack: () => void showHome(),
+      });
+    }
   }
 
-  const initial = await getContact();
-  const initialContact = initial.ok ? initial.data : null;
-
-  if (initialContact) {
-    showQr(initialContact);
-  } else {
-    showForm(null);
-  }
-
-  // Si el contacto se borra desde otro punto de la app (ej. futura opción
-  // "reiniciar" en ajustes), volvemos automáticamente al formulario.
-  subscribe((contact) => {
-    if (!contact) showForm(null);
-  });
+  await showHome();
 }
