@@ -19,11 +19,7 @@ function getDisplayLabel(card: Card): string {
 }
 
 /**
- * Renderiza la pantalla de QR a pantalla completa. Es agnóstica al tipo
- * de tarjeta: no construye el contenido del QR ella misma, lo recibe ya
- * resuelto (vCard o URL de Instagram) desde `buildQrPayload` en el router.
- * Devuelve una función de limpieza que DEBE llamarse al navegar fuera
- * de esta pantalla (libera el Wake Lock).
+ * Renderiza la pantalla de QR a pantalla completa.
  */
 export function renderQrDisplay(
   container: HTMLElement,
@@ -34,44 +30,43 @@ export function renderQrDisplay(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  // Fondo blanco puro: no podemos forzar el brillo físico de la pantalla
-  // desde el navegador, pero el máximo contraste posible (blanco puro +
-  // QR negro) es lo que más ayuda a que la cámara receptora lo lea rápido.
+  // Fondo oscuro, tarjeta blanca centrada
   wrapper.className =
-    "min-h-screen w-full bg-white text-black flex flex-col items-center justify-center gap-6 relative";
+    "min-h-screen w-full bg-surface text-text-primary flex flex-col items-center justify-center p-6";
 
   const backButton = document.createElement("button");
   backButton.textContent = "← Volver";
-  backButton.className = "absolute top-4 left-4 text-sm text-black/60";
+  backButton.className = "absolute top-4 left-4 text-text-secondary hover:text-text-primary";
   backButton.addEventListener("click", callbacks.onBack);
 
   const gearButton = document.createElement("button");
-  gearButton.textContent = "⚙️";
+  gearButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
   gearButton.setAttribute("aria-label", "Editar esta tarjeta");
-  gearButton.className = "absolute top-4 right-4 text-2xl p-2";
+  gearButton.className = "absolute top-4 right-4 p-2 hover:bg-surface-variant rounded-full text-text-secondary hover:text-text-primary transition-all";
   gearButton.addEventListener("click", callbacks.onEdit);
+
+  // Tarjeta contenedora para el QR
+  const cardContainer = document.createElement("div");
+  cardContainer.className = "bg-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4";
+
+  const canvas = document.createElement("canvas");
+  // Aseguramos que el QR se vea bien sobre el blanco
+  canvas.className = "rounded-2xl";
 
   const nameLabel = document.createElement("p");
   nameLabel.textContent = getDisplayLabel(card);
-  nameLabel.className = "text-lg font-semibold text-black/80";
+  nameLabel.className = "text-xl font-bold text-black";
 
-  const canvas = document.createElement("canvas");
-  canvas.className = "rounded-lg";
+  cardContainer.append(canvas, nameLabel);
 
   const errorEl = document.createElement("p");
-  errorEl.className = "text-sm text-red-600";
+  errorEl.className = "text-sm text-red-500 mt-4";
 
-  wrapper.append(backButton, gearButton, canvas, nameLabel, errorEl);
-
-  // Placeholder del banner sticky de AdSense (Fase 4 del plan de monetización).
-  const adSlot = document.createElement("div");
-  adSlot.id = "ad-slot-qr-screen";
-  adSlot.className = "fixed bottom-0 left-0 right-0 h-0"; // altura 0 hasta que se integre el ad real
-  wrapper.append(adSlot);
+  wrapper.append(backButton, gearButton, cardContainer, errorEl);
 
   container.append(wrapper);
 
-  QRCode.toCanvas(canvas, qrContent, { width: 280, margin: 2 }, (err) => {
+  QRCode.toCanvas(canvas, qrContent, { width: 250, margin: 1 }, (err) => {
     if (err) errorEl.textContent = "No se pudo generar el código QR.";
   });
 

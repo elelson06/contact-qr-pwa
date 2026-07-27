@@ -23,18 +23,18 @@ export function renderProfessionalForm(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16";
+  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 text-text-primary bg-surface min-h-screen";
 
   const backButton = createButton({ label: "← Volver", variant: "ghost", onClick: callbacks.onBack });
-  backButton.className = "w-auto self-start";
+  backButton.className = "w-auto self-start text-primary";
 
   const heading = document.createElement("h1");
   heading.textContent = existingCard ? "Editar tarjeta Profesional" : "Configura tu tarjeta Profesional";
-  heading.className = "text-xl font-semibold";
+  heading.className = "text-2xl font-semibold text-text-primary";
 
   const subheading = document.createElement("p");
   subheading.textContent = "Nombre y teléfono son obligatorios. El resto es opcional.";
-  subheading.className = "text-sm text-white/60";
+  subheading.className = "text-sm text-text-secondary";
 
   const nameField = createField({
     id: "prof-name",
@@ -145,7 +145,7 @@ export function renderProfessionalForm(
   const backupHint = document.createElement("p");
   backupHint.textContent =
     "Recomendado: algunos navegadores pueden borrar los datos guardados si no abres la app por varios días. Este archivo te permite restaurar tu tarjeta.";
-  backupHint.className = "text-xs text-white/40";
+  backupHint.className = "text-xs text-text-secondary";
 
   wrapper.append(backButton, heading, subheading, form, backupButton, backupHint);
   container.append(wrapper);

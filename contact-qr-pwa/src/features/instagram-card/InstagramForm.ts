@@ -17,19 +17,19 @@ export function renderInstagramForm(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16";
+  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 bg-surface min-h-screen text-text-primary";
 
   const backButton = createButton({ label: "← Volver", variant: "ghost", onClick: callbacks.onBack });
-  backButton.className = "w-auto self-start";
+  backButton.className = "w-auto self-start text-primary";
 
   const heading = document.createElement("h1");
   heading.textContent = existingCard ? "Editar tarjeta Instagram" : "Configura tu tarjeta Instagram";
-  heading.className = "text-xl font-semibold";
+  heading.className = "text-2xl font-semibold text-text-primary";
 
   const subheading = document.createElement("p");
   subheading.textContent =
     "El QR abrirá directamente tu perfil de Instagram. Quien lo escanee solo tiene que tocar \"Seguir\".";
-  subheading.className = "text-sm text-white/60";
+  subheading.className = "text-sm text-text-secondary";
 
   const usernameField = createField({
     id: "ig-username",
@@ -39,7 +39,7 @@ export function renderInstagramForm(
   });
 
   const previewEl = document.createElement("p");
-  previewEl.className = "text-xs text-white/40 break-all";
+  previewEl.className = "text-xs text-text-secondary break-all";
 
   function updatePreview(): void {
     const result = buildInstagramUrl({ username: usernameField.input.value });

@@ -16,12 +16,12 @@ export function createField({ id, label, placeholder, type = "text", value = "" 
   input: HTMLInputElement;
 } {
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-1";
+  wrapper.className = "flex flex-col gap-1.5";
 
   const labelEl = document.createElement("label");
   labelEl.htmlFor = id;
   labelEl.textContent = label;
-  labelEl.className = "text-sm text-white/70";
+  labelEl.className = "text-sm font-medium text-text-secondary ml-1";
 
   const input = document.createElement("input");
   input.id = id;
@@ -31,7 +31,7 @@ export function createField({ id, label, placeholder, type = "text", value = "" 
   input.value = value;
   input.autocomplete = "off";
   input.className =
-    "rounded-lg bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-brand-accent";
+    "rounded-xl bg-transparent border border-outline px-4 py-3 text-text-primary placeholder-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all";
 
   wrapper.append(labelEl, input);
   return { wrapper, input };

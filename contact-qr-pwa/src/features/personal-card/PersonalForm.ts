@@ -21,19 +21,19 @@ export function renderPersonalForm(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16";
+  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 text-text-primary bg-surface min-h-screen";
 
   const backButton = createButton({ label: "← Volver", variant: "ghost", onClick: callbacks.onBack });
-  backButton.className = "w-auto self-start";
+  backButton.className = "w-auto self-start text-primary";
 
   const heading = document.createElement("h1");
   heading.textContent = existingCard ? "Editar tarjeta Personal" : "Configura tu tarjeta Personal";
-  heading.className = "text-xl font-semibold";
+  heading.className = "text-2xl font-semibold text-text-primary";
 
   const subheading = document.createElement("p");
   subheading.textContent =
     "Estos datos se generan como QR para que otros los escaneen. Se guardan solo en tu dispositivo.";
-  subheading.className = "text-sm text-white/60";
+  subheading.className = "text-sm text-text-secondary";
 
   const nameField = createField({
     id: "personal-name",
@@ -98,7 +98,7 @@ export function renderPersonalForm(
   const backupHint = document.createElement("p");
   backupHint.textContent =
     "Recomendado: algunos navegadores pueden borrar los datos guardados si no abres la app por varios días. Este archivo te permite restaurar tu tarjeta.";
-  backupHint.className = "text-xs text-white/40";
+  backupHint.className = "text-xs text-text-secondary";
 
   wrapper.append(backButton, heading, subheading, form, backupButton, backupHint);
   container.append(wrapper);
