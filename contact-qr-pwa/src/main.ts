@@ -14,3 +14,15 @@ if (!root) {
 
 startApp(root);
 renderInstallBanner();
+
+// Revisa si hay una versión nueva cada 60 minutos. Cubre el caso de
+// alguien que deja la PWA abierta en modo pantalla completa durante
+// mucho tiempo sin volver a "navegar" (que es normalmente cuándo el
+// navegador chequea actualizaciones del Service Worker por su cuenta).
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.ready.then((registration) => {
+    setInterval(() => {
+      registration.update();
+    }, 60 * 60 * 1000);
+  });
+}
