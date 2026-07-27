@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* 1. Preparamos el body para recibir la capa del pseudo-elemento */
+  body {
+    position: relative;
+    min-height: 100vh;
+  }
+
+
+  /* 3. Aseguramos que el contenido real de la app esté sobre el fondo */
+  #app, #root, main {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* 4. Ajuste para pantallas más grandes (Escritorio/Tablet) */
+@media (min-width: 768px) {
+  body::before {
+    background-size: 380px;
+  }
+}

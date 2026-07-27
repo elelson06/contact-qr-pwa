@@ -2,6 +2,7 @@ import { createField } from "@shared/ui/input";
 import { createButton } from "@shared/ui/button";
 import { saveCard } from "@core/storage/cardStore";
 import { buildInstagramUrl } from "@core/instagram/buildInstagramUrl";
+import { createFooter } from "@shared/ui/footer";
 import type { InstagramCard } from "@core/types/card.types";
 
 interface InstagramFormCallbacks {
@@ -17,7 +18,7 @@ export function renderInstagramForm(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 bg-surface min-h-screen text-text-primary";
+  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 bg-background min-h-screen text-text-primary";
 
   const backButton = createButton({ label: "← Volver", variant: "ghost", onClick: callbacks.onBack });
   backButton.className = "w-auto self-start text-primary";
@@ -77,6 +78,6 @@ export function renderInstagramForm(
     callbacks.onSaved(result.data as InstagramCard);
   });
 
-  wrapper.append(backButton, heading, subheading, form);
+  wrapper.append(backButton, heading, subheading, form, createFooter());
   container.append(wrapper);
 }

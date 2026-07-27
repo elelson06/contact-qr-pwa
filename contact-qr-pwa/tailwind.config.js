@@ -6,20 +6,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Material Design 3 - Dark Theme inspired
+        // Material Design 3 - Light Theme
         surface: {
-          DEFAULT: "#18181b", // Zinc 900
-          variant: "#27272a", // Zinc 800
+          DEFAULT: "#FFFBFE", // Surface
+          variant: "#E7E0EC", // Surface Variant
         },
         primary: {
-          DEFAULT: "#22d3ee", // Cyan 400
-          on: "#0f172a", // Slate 900
+          DEFAULT: "#6750A4", // Primary Purple
+          on: "#FFFFFF",      // On Primary (White)
         },
-        outline: "#52525b", // Zinc 600
+        outline: "#79747E",   // Outline
         text: {
-          primary: "#f4f4f5", // Zinc 100
-          secondary: "#a1a1aa", // Zinc 400
+          primary: "#1C1B1F",  // On Surface
+          secondary: "#49454F",// On Surface Variant
         },
+        background: "#FFFBFE", // Background
       },
     },
   },

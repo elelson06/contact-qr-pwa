@@ -2,6 +2,7 @@ import { createField } from "@shared/ui/input";
 import { createButton } from "@shared/ui/button";
 import { saveCard } from "@core/storage/cardStore";
 import { exportContactAsVcf } from "@shared/utils/exportVcf";
+import { createFooter } from "@shared/ui/footer";
 import type { PersonalCard } from "@core/types/card.types";
 
 interface PersonalFormCallbacks {
@@ -21,7 +22,7 @@ export function renderPersonalForm(
   container.innerHTML = "";
 
   const wrapper = document.createElement("div");
-  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 text-text-primary bg-surface min-h-screen";
+  wrapper.className = "flex flex-col gap-6 max-w-sm mx-auto p-6 pt-16 text-text-primary bg-background min-h-screen";
 
   const backButton = createButton({ label: "← Volver", variant: "ghost", onClick: callbacks.onBack });
   backButton.className = "w-auto self-start text-primary";
@@ -100,6 +101,6 @@ export function renderPersonalForm(
     "Recomendado: algunos navegadores pueden borrar los datos guardados si no abres la app por varios días. Este archivo te permite restaurar tu tarjeta.";
   backupHint.className = "text-xs text-text-secondary";
 
-  wrapper.append(backButton, heading, subheading, form, backupButton, backupHint);
+  wrapper.append(backButton, heading, subheading, form, backupButton, backupHint, createFooter());
   container.append(wrapper);
 }
