@@ -44,7 +44,7 @@ export async function renderInstallBanner(): Promise<void> {
   function buildContainer(): HTMLDivElement {
     const el = document.createElement("div");
     el.className =
-      "fixed bottom-0 left-0 right-0 bg-white text-black p-4 flex items-center gap-3 shadow-[0_-4px_12px_rgba(0,0,0,0.2)] z-50";
+      "fixed bottom-0 left-0 right-0 bg-white text-slate-950 p-4 flex flex-col gap-3 shadow-[0_-8px_24px_rgba(15,23,42,0.16)] z-50 sm:flex-row sm:items-center sm:justify-between";
     return el;
   }
 
@@ -54,7 +54,7 @@ export async function renderInstallBanner(): Promise<void> {
     container = buildContainer();
 
     const text = document.createElement("p");
-    text.className = "flex-1 text-sm";
+    text.className = "flex-1 min-w-0 text-sm leading-6 text-slate-900";
     text.textContent = "Instala esta app para abrir tu QR al instante, incluso sin conexión.";
 
     const installBtn = createButton({
@@ -67,12 +67,14 @@ export async function renderInstallBanner(): Promise<void> {
         }
       },
     });
-    installBtn.className += " w-auto flex-shrink-0";
+    installBtn.className +=
+      " w-full sm:w-auto min-w-[9rem] rounded-[999px] px-4 py-2.5 text-sm font-semibold shadow-lg hover:shadow-xl";
 
     const closeBtn = document.createElement("button");
     closeBtn.textContent = "✕";
     closeBtn.setAttribute("aria-label", "Cerrar");
-    closeBtn.className = "text-black/40 px-2 flex-shrink-0";
+    closeBtn.className =
+      "text-slate-500 hover:text-slate-700 px-2 py-1 rounded-full flex-shrink-0";
     closeBtn.addEventListener("click", () => void dismiss());
 
     container.append(text, installBtn, closeBtn);
