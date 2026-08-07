@@ -7,6 +7,8 @@ import { registerSW } from "virtual:pwa-register";
 import { startApp } from "./app";
 import { renderInstallBanner } from "@features/install-banner/InstallBanner";
 import { renderUpdateBanner } from "@features/update-banner/UpdateBanner";
+import { inject as injectAnalytics } from "@vercel/analytics";
+import { injectSpeedInsights } from "@vercel/speed-insights";
 
 const root = document.getElementById("app");
 
@@ -16,6 +18,9 @@ if (!root) {
 
 startApp(root);
 renderInstallBanner();
+
+injectAnalytics();
+injectSpeedInsights();
 
 /**
  * Registro del Service Worker con confirmación explícita del usuario:
