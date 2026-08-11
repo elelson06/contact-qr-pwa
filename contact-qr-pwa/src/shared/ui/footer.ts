@@ -7,7 +7,7 @@ export function createFooter(): HTMLElement {
   footer.className = "mt-auto py-4 text-center flex flex-col items-center justify-center";
 
   const link = document.createElement("a");
-  link.href = "https://elsonlabs.com"; // Temporal
+  link.href = "https://elsonlabs-apps.github.io/"; // Temporal
   link.target = "_blank";
   link.rel = "noopener noreferrer";
   // Disposición vertical: texto arriba, icono abajo
