@@ -9,11 +9,12 @@
     min-height: 100vh;
   }
 
-
   /* 3. Aseguramos que el contenido real de la app esté sobre el fondo */
   #app, #root, main {
     position: relative;
     z-index: 1;
+    height: 100vh; /* Add this line to make #app take up full height */
+    overflow-y: hidden; /* Add this line to remove vertical scroll */
   }
 }
 
