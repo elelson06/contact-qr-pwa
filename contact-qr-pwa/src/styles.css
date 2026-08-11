@@ -13,8 +13,7 @@
   #app, #root, main {
     position: relative;
     z-index: 1;
-    height: 100vh; /* Add this line to make #app take up full height */
-    overflow-y: hidden; /* Add this line to remove vertical scroll */
+    min-height: 100vh;
   }
 }
 
